@@ -1,0 +1,79 @@
+{
+    "rewrite_rule_sets" : [
+        {
+            "name" : "rule_set1",
+            "rewrite_rule" : [
+                {
+                    "name" : "rule1",
+                    "rule_sequence" : 100,
+                    "response_header_config" : [
+                        {
+                            "header_name" : "Cache-Control",
+                            "header_value" : "no-store, max-age=0"
+                        },
+                        {
+                            "header_name" : "X-Frame-Options",
+                            "header_value" : "SAMEORIGIN"
+                        }
+                    ]
+                },
+                {
+                    "name" : "rule2",
+                    "rule_sequence" : 200,
+                    "request_header_config" : [
+                        {
+                            "header_name" : "X-Forwarded-For",
+                            "header_value" : "{var_add_x_forwarded_for_proxy}"   
+                        }
+                    ],
+                    "conditions" : [
+                        {
+                            "ignore_case" : false,
+                            "negate" : false,
+                            "pattern" : "{var_add_x_forwarded_for_proxy}",
+                            "variable" : "http_req_X-Forwarded-For"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name" : "dummy2",
+            "rewrite_rule" : [
+                {
+                    "name" : "rule1",
+                    "rule_sequence" : 100,
+                    "response_header_config" : [
+                        {
+                            "header_name" : "Cache-Control",
+                            "header_value" : "no-store, max-age=0"
+                        },
+                        {
+                            "header_name" : "X-Frame-Options",
+                            "header_value" : "SAMEORIGIN"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name" : "dummy3",
+            "rewrite_rule" : [
+                {
+                    "name" : "rule1",
+                    "rule_sequence" : 100,
+                    "response_header_config" : [
+                        {
+                            "header_name" : "Cache-Control",
+                            "header_value" : "no-store, max-age=0"
+                        },
+                        {
+                            "header_name" : "X-Frame-Options",
+                            "header_value" : "SAMEORIGIN"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
