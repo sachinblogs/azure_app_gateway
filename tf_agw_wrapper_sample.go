@@ -132,23 +132,23 @@ func main() {
     ...
     ...
 	 
-	  //Print the final record if 'debug' env variable is set
+   //Print the final record if 'debug' env variable is set
     out, err := json.Marshal(global_rec)
     if err != nil {
         log.Fatal(err)
     }
     if os.Getenv("debug") == "True" { 
         fmt.Println(string(out))
-	  }
+    }
 	
-	//Write the record to file
-	fmt.Println("Writing merge config data to ./app_gw_inputs.tfvars.json")
-	op_file, err := json.MarshalIndent(global_rec, "", " ")
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = ioutil.WriteFile("./app_gw_inputs.tfvars.json", op_file, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
+    //Write the record to file
+    fmt.Println("Writing merge config data to ./app_gw_inputs.tfvars.json")
+    op_file, err := json.MarshalIndent(global_rec, "", " ")
+    if err != nil {
+	log.Fatal(err)
+    }
+    err = ioutil.WriteFile("./app_gw_inputs.tfvars.json", op_file, 0644)
+    if err != nil {
+	log.Fatal(err)
+    }
 }
