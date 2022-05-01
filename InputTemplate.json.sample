@@ -1,0 +1,109 @@
+{
+    "app_id" : "1234",                
+    "env" : "qty",                  
+    "backend_address_pools" : [
+      {
+        "number" : 1,                                     ==> wrapper code will formulate name as [app_id][env]bkdpool_[number]
+        "fqdns" : ["xyz","abc"],                          ==> VM FQDN ... null if not required
+        "ip_addresses" : []                               ==> VM IP
+      }
+    ],
+    "backend_http_settings" : [      
+    {
+        "name" : "bs_demo1",                              ==> wrapper code will formulate name as [app_id][env]bkdhttp_[name]_[port]
+        "cookie_based_affinity" : "Enabled", 
+        "port" : 80,
+        "protocol" : "Http",
+        "trusted_root_certificate_names" : ["root"],      
+        "enable_connection_draining" : true,
+        "drain_timeout_sec" : 60
+    },
+    {
+        "name" : "bs_demo2",                              ==> wrapper code will formulate name as [app_id][env]bkdhttp_[name]_[port]
+        "cookie_based_affinity" : "Enabled", 
+        "port" : 443,
+        "probe_name" : "pb_demo",                         ==> wrapper code will validate if this name matches with name in probe_configs
+        "protocol" : "Https"
+    }
+    ],
+    "http_listeners" : [
+        {
+            "name" : "hl_demo1",                          ==> wrapper code will formulate name as [app_id][env]lstr_[name]_[port]
+            "frontend_port_number" : 80,
+            "protocol" : "Http"
+        },
+        {
+            "name" : "hl_demo2",                          ==> wrapper code will formulate name as [app_id][env]lstr_[name]_[port]
+            "frontend_port_number" : 443,
+            "protocol" : "Https" ,
+            "ssl_certificate_name" : "democrt"            ==> wrapper code will validate if this name matches with name in ssl_certificate_configs
+        }
+    ],
+    "redirect_request_routing_rules" : [
+        {
+            "name" : "rl_demo1",                          ==> wrapper code will formulate name as [app_id][env]rdrule_[name]
+            "http_listener_name" : "hl_demo1",            ==> wrapper code will validate if this name matches with name in http_listeners
+            "redirect_configuration_name" : "rd_demo1"    ==> wrapper code will validate if this name matches with name in redirect_configurations
+        }
+    ],
+    "redirect_configurations" : [
+        {
+            "name" : "rd_demo1",                          ==> wrapper code will formulate name as [app_id][env]rdconfig_[name]
+            "target_listener_name" : "hl_demo2",          ==> wrapper code will validate if this name matches with name in http_listeners
+            "include_path" : true,
+            "include_query_string" : true
+        }
+    ],
+    "basic_request_routing_rules" : [
+        {
+            "name" : "rl_demo2",                          ==> wrapper code will formulate name as [app_id][env]brule_[name]
+            "http_listener_name" : "hl_demo2",            ==> wrapper code will validate if this name matches with name in http_listeners
+            "backend_address_pool_number" : 1,            ==> wrapper code will validate if this name matches with name in backend_address_pools
+            "backend_http_settings_name" :  "bs_demo2",   ==> wrapper code will validate if this name matches with name in backend_http_settings
+            "rewrite_rule_set_name" : "rule_set1"         ==> wrapper code will validate if this name matches with name in global rewrite_rule_set.json
+        }
+    ],
+    "path_based_request_routing_rules" : [
+        {
+            "name" : "rl_demo3",                                ==> wrapper code will formulate name as [app_id][env]prule_[name]
+            "http_listener_name" : "hl_demo2",                  ==> wrapper code will validate if this name matches with name in http_listeners
+            "url_path_map_name" : "ul_demo1"                    ==> wrapper code will validate if this name matches with name in url_path_map_configs
+        }
+    ],
+    "ssl_certificate_configs" : [
+        {
+            "name" : "democrt",                                 ==> wrapper code will formulate name as [app_id][env]sslcrt_[name]_[port] 
+            "key_vault_secret_id" : "https://dummyvault1234.vault.azure.net/secrets/demo" 
+        }
+    ],
+    "url_path_map_configs" : [
+        {
+            "name" : "ul_demo1",                                 ==> wrapper code will formulate name as [app_id][env]ulpath_[name]    
+            "default_backend_address_pool_number" : 1,           ==> wrapper code will validate if this name matches with name in backend_address_pools
+            "default_redirect_configuration_name" : "rd_demo1",  ==> wrapper code will validate if this name matches with name in redirect_configurations
+            "default_backend_http_settings_name" : "bs_demo2",   ==> wrapper code will validate if this name matches with name in backend_http_settings
+            "path_rule" : [
+                {
+                    "path_rule_name" : "path1",
+                    "paths" : ["/test"],
+                    "backend_address_pool_number" : 1, 
+                    "backend_http_settings_name" : "bs_demo2"     ==> wrapper code will validate if this name matches with name in backend_http_settings
+                }
+            ]
+        }
+    ],
+    "probe_configs" : [
+        {
+            "name" : "pb_demo",                                   ==> wrapper code will formulate name as [app_id][env]bkdprobe_[name]_[port]
+            "host" : "xyz.com", 
+            "interval" : 30,
+            "path" : "/test" ,
+            "protocol" : "Https",
+            "timeout" : 50,
+            "pick_host_name_from_backend_http_settings" : false, 
+            "unhealthy_threshold" : 20,
+            "match_body" : "str",
+            "match_status_code" : ["200-300"]
+        }
+    ]
+}
