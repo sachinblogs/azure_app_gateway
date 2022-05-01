@@ -1,5 +1,5 @@
 ##########################################################################
-#######    This is not full code, snippest of it
+#######    This is not full code, snippet of it
 #########################################################################
 
 resource "azurerm_application_gateway" "app_gateway" {
